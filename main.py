@@ -1,13 +1,19 @@
 import argparse
+import logging
 import os
 
+from logger import setup_logger
 
 class FileSynchronizer:
-    def __init__(self, source_path, target_path, log_path, interval):
+    def __init__(self, source_path, target_path, interval):
         self.source_path = source_path
         self.target_path = target_path
-        self.log_path = log_path
         self.interval = interval
+        self.check_folders()
+
+    def check_folders(self):
+        if not os.path.isdir(self.source_path):
+            logging.error("error")
 
 
 def main():
@@ -23,9 +29,9 @@ def main():
                         help="Specify the time interval at which backups will be created (in seconds).", required=False)
 
     args = parser.parse_args()
-
-    fs = FileSynchronizer(args.source_path, args.target_path, args.log_path, args.interval)
-    fs.test()
+    logger = setup_logger(args.log_path, logging.INFO)
+    logging.info(f"Start of program")
+    fs = FileSynchronizer(args.source_path, args.target_path, args.interval)
 
 if __name__ == "__main__":
     main()
